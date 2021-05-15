@@ -1,0 +1,14 @@
+package main
+
+import (
+	"github.com/sirodeneko/QQBOT/util"
+	"github.com/sirupsen/logrus"
+)
+
+const Versions = "0.0.1 Bate"
+
+func main() {
+	util.Logger.Info("QQBOT开始运行")
+	util.Logger.Info("版本：" + Versions)
+
+}
