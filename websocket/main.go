@@ -3,11 +3,11 @@ package websocket
 import (
 	"bytes"
 	"github.com/gorilla/websocket"
+	"github.com/sirodeneko/QQBOT/coolq"
 	"github.com/sirodeneko/QQBOT/util"
-	"log"
+	"github.com/tidwall/gjson"
 	"net/http"
 	"runtime/debug"
-	"strings"
 	"sync"
 )
 
@@ -74,13 +74,22 @@ func (c *WsClient) handleRequest(payload []byte) {
 			_ = c.Close()
 		}
 	}()
-	j := gjson.ParseBytes(payload)
-	t := strings.ReplaceAll(j.Get("action").Str, "_async", "")
-	log.Debugf("WS接收到API调用: %v 参数: %v", t, j.Get("params").Raw)
-	ret := c.apiCaller.callAPI(t, j.Get("params"))
-	if j.Get("echo").Exists() {
-		ret["echo"] = j.Get("echo").Value()
+
+	if !gjson.ValidBytes(payload) {
+		util.Logger.Debugf("ws收到的数据非json格式：%v", string(payload))
+		return
 	}
+
+	ret, err := coolq.CallEvent(payload)
+	if err != nil {
+		return
+	}
+	//t := strings.ReplaceAll(j.Get("action").Str, "_async", "")
+	//log.Debugf("WS接收到API调用: %v 参数: %v", t, j.Get("params").Raw)
+	//ret := c.apiCaller.callAPI(t, j.Get("params"))
+	//if j.Get("echo").Exists() {
+	//	ret["echo"] = j.Get("echo").Value()
+	//}
 	c.Lock()
 	defer c.Unlock()
 	_ = c.WriteJSON(ret)

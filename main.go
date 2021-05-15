@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/sirodeneko/QQBOT/util"
-	"github.com/sirupsen/logrus"
 )
 
 const Versions = "0.0.1 Bate"
