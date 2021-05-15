@@ -21,12 +21,13 @@ func main() {
 		util.Logger.Info("配置文件加载成功")
 	}
 
-	wsClient, err := server.NewWebSocketClient(config.QQBotConfig.UrlStr, config.QQBotConfig.Token)
+	qqBot := coolq.NewQQBot()
+	wsClient, err := server.NewWebSocketClient(config.QQBotConfig.UrlStr, config.QQBotConfig.Token, qqBot)
 	if err != nil {
 		util.Logger.Warnf("websocket 连接失败：%v", err)
 		return
 	}
-	qqBot := coolq.NewQQBot(wsClient)
+
 	qqBot.Ues(coolq.PrivateMessageEvent, plugin.Imitator)
-	qqBot.Listen()
+	wsClient.Listen()
 }
