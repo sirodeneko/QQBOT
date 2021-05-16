@@ -28,6 +28,6 @@ func main() {
 		return
 	}
 
-	qqBot.Ues(coolq.PrivateMessageEvent, plugin.Imitator)
+	qqBot.Ues(coolq.PrivateMessageEvent, plugin.Imitator(wsClient))
 	wsClient.Listen()
 }
