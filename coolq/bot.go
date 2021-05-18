@@ -45,7 +45,19 @@ func (bot *QQBoT) Ues(eventName Event, fn func(eventData interface{})) {
 func (bot *QQBoT) OnEvent(eventName Event, eventData interface{}) {
 	if efunc := bot.EventFunc[eventName]; efunc != nil {
 		for _, itemFunc := range efunc {
-			itemFunc(eventData)
+			if itemFunc != nil {
+				go func(fn func(eventData interface{})) {
+					defer func() {
+						if err := recover(); err != nil {
+							util.Logger.Printf("插件运行失败：%v\n", err)
+						}
+					}()
+
+					fn(eventData)
+
+				}(itemFunc)
+
+			}
 		}
 	}
 }
