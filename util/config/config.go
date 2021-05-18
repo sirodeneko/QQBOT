@@ -2,6 +2,7 @@ package config
 
 import (
 	"github.com/joho/godotenv"
+	"github.com/sirodeneko/QQBOT/util"
 	"os"
 )
 
@@ -15,7 +16,8 @@ var QQBotConfig *Config
 func LoadConfig() error {
 	err := godotenv.Load()
 	if err != nil {
-		return err
+		//return err
+		util.Logger.Infof("配置文件错误,请确保环境变量无误：%v", err)
 	}
 	config := &Config{
 		UrlStr: os.Getenv("WS_URL"),
