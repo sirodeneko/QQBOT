@@ -7,17 +7,11 @@ import (
 	"github.com/tidwall/gjson"
 )
 
-type Event string
-
-const (
-	PrivateMessageEvent Event = "privateMessageEvent"
-	GroupMessageEvent   Event = "groupMessageEvent"
-)
-
 func (bot *QQBoT) CallEvent(bytes []byte) {
 
 	postType := gjson.GetBytes(bytes, "post_type").String()
 	messageType := gjson.GetBytes(bytes, "message_type").String()
+	noticeType := gjson.GetBytes(bytes, "notice_type").String()
 	subType := gjson.GetBytes(bytes, "sub_type").String()
 
 	if gjson.GetBytes(bytes, "meta_event_type").String() != "heartbeat" {
@@ -36,6 +30,12 @@ func (bot *QQBoT) CallEvent(bytes []byte) {
 			//"post_type":    "message",
 			//"message_type": "group",
 			bot.groupMessageEvent(bytes)
+		}
+	} else if postType == "notice" {
+		if noticeType == string(GroupIncreaseNotice) {
+			//"post_type":    "notice",
+			//"notice_type": "group_increase",
+			bot.groupIncreaseEvent(bytes)
 		}
 	}
 
@@ -62,4 +62,15 @@ func (bot *QQBoT) groupMessageEvent(bytes []byte) {
 	}
 
 	bot.OnEvent(GroupMessageEvent, &groupMessage)
+}
+
+func (bot *QQBoT) groupIncreaseEvent(bytes []byte) {
+	var groupIncrease GroupIncrease
+	err := json.Unmarshal(bytes, &groupIncrease)
+	if err != nil {
+		util.Logger.Debugf("私聊消息序列化失败：%v", err)
+		return
+	}
+
+	bot.OnEvent(GroupIncreaseEvent, &groupIncrease)
 }
