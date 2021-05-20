@@ -45,7 +45,7 @@
   main.go
 
   ```
-  //通过Ues函数进行插件的注册，参数1：时间类型，参数2：运行插件的方法
+  //通过Ues函数进行插件的注册，参数1：事件类型，参数2：运行插件的方法
   //参数2 接受的类型为func(eventData interface{})，对于复杂的逻辑，可通过闭包进行
   //变量的传递，如本例，通过传入wsClient进行了消息的发送
   qqBot.Ues(coolq.PrivateMessageEvent, plugin.Imitator(wsClient))
