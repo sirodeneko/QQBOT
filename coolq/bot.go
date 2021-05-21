@@ -41,6 +41,11 @@ func (bot *QQBoT) Ues(eventName Event, fn func(eventData interface{})) {
 	bot.EventFuncLock.Lock()
 	defer bot.EventFuncLock.Unlock()
 
+	if fn == nil {
+		util.Logger.Error("fn is nil!")
+		return
+	}
+
 	if bot.EventFunc[eventName] == nil {
 		bot.EventFunc[eventName] = make([]func(interface{}), 0)
 	}
