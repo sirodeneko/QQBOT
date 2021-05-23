@@ -36,6 +36,7 @@ func GroupImitator(ws *server.WsClient) func(interface{}) {
 		util.Logger.Debugf("收到消息，进行复读")
 		msg := eventData.(*coolq.GroupMessage)
 
+		// 对于特定的消息不进行复读
 		if strings.Contains(msg.Message, "邹") {
 			api := &coolq.SendMSGParams{
 				MessageType: msg.MessageType,
