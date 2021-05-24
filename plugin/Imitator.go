@@ -12,7 +12,7 @@ func Imitator1(eventData interface{}) {
 }
 
 // 复读机
-func Imitator(ws *server.WsClient) func(interface{}) {
+func Imitator(c *server.Client) func(interface{}) {
 
 	return func(eventData interface{}) {
 		util.Logger.Debugf("收到消息，进行复读")
@@ -24,13 +24,13 @@ func Imitator(ws *server.WsClient) func(interface{}) {
 			Message:     msg.Message,
 			AutoEscape:  false,
 		}
-		ws.CallWithWs(coolq.SendMSG, api, "xxx")
+		c.CallWithWs(coolq.SendMSG, api, "xxx")
 	}
 }
 
 // 群复读
 // 复读机
-func GroupImitator(ws *server.WsClient) func(interface{}) {
+func GroupImitator(c *server.Client) func(interface{}) {
 
 	return func(eventData interface{}) {
 		util.Logger.Debugf("收到消息，进行复读")
@@ -44,7 +44,7 @@ func GroupImitator(ws *server.WsClient) func(interface{}) {
 				Message:     coolq.At(msg.UserId, "") + "哼 ╭(╯^╰)╮ 又欺负小舞",
 				AutoEscape:  false,
 			}
-			ws.CallWithWs(coolq.SendMSG, api, "xxx")
+			c.CallWithWs(coolq.SendMSG, api, "xxx")
 			return
 		}
 
@@ -54,6 +54,8 @@ func GroupImitator(ws *server.WsClient) func(interface{}) {
 			Message:     coolq.At(msg.UserId, "") + msg.Message,
 			AutoEscape:  false,
 		}
-		ws.CallWithWs(coolq.SendMSG, api, "xxx")
+		c.CallWithWs(coolq.SendMSG, api, "xxx")
 	}
 }
+
+//

@@ -22,7 +22,7 @@ func main() {
 	}
 
 	qqBot := coolq.NewQQBot()
-	wsClient, err := server.NewWebSocketClient(config.QQBotConfig.UrlStr, config.QQBotConfig.Token, qqBot)
+	client, err := server.NewClient(config.QQBotConfig, qqBot)
 	if err != nil {
 		util.Logger.Warnf("websocket 连接失败：%v", err)
 		return
@@ -31,9 +31,10 @@ func main() {
 	//通过Ues函数进行插件的注册，参数1：事件类型，参数2：运行插件的方法
 	//参数2 接受的类型为func(eventData interface{})，对于复杂的逻辑，可通过闭包进行
 	//变量的传递
-	qqBot.Ues(coolq.PrivateMessageEvent, plugin.Imitator(wsClient))
-	qqBot.Ues(coolq.GroupMessageEvent, plugin.GroupImitator(wsClient))
-	qqBot.Ues(coolq.GroupMessageEvent, plugin.Welcome(wsClient))
+	//qqBot.Ues(coolq.PrivateMessageEvent, plugin.Imitator(client))
+	//qqBot.Ues(coolq.GroupMessageEvent, plugin.GroupImitator(client))
+	//qqBot.Ues(coolq.GroupMessageEvent, plugin.Welcome(client))
+	qqBot.Ues(coolq.GroupMessageEvent, plugin.Notice(client))
 
-	wsClient.Listen()
+	client.WsListen()
 }

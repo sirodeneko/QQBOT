@@ -20,7 +20,7 @@ type WsClient struct {
 	sync.Mutex
 }
 
-func NewWebSocketClient(urlStr string, token string, bot *coolq.QQBoT) (*WsClient, error) {
+func newWebSocketClient(urlStr string, token string, bot *coolq.QQBoT) (*WsClient, error) {
 	header := http.Header{
 		"User-Agent": []string{"QQBOT"},
 	}
@@ -52,7 +52,7 @@ func NewWebSocketClient(urlStr string, token string, bot *coolq.QQBoT) (*WsClien
 	return wsClient, nil
 }
 
-func (ws *WsClient) Listen() {
+func (ws *WsClient) listen() {
 	defer func() { _ = ws.Close() }()
 
 	for {
@@ -68,6 +68,7 @@ func (ws *WsClient) Listen() {
 			break
 		}
 		if t == websocket.TextMessage {
+			// 读取数据，开启一个goroutine进行处理
 			go func(buffer *bytes.Buffer) {
 				defer util.PutBuffer(buffer)
 				ws.bot.HandleRequest(buffer.Bytes())
@@ -101,5 +102,5 @@ func (ws *WsClient) connect() {
 	}
 	util.Logger.Infof("已连接到反向WebSocket API服务器 %v", ws.wsUrl)
 	ws.Conn = conn
-	go ws.Listen()
+	go ws.listen()
 }

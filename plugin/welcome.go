@@ -7,7 +7,7 @@ import (
 )
 
 // 群欢迎
-func Welcome(ws *server.WsClient) func(interface{}) {
+func Welcome(c *server.Client) func(interface{}) {
 
 	return func(eventData interface{}) {
 		util.Logger.Debugf("收到消息，进行复读")
@@ -19,6 +19,6 @@ func Welcome(ws *server.WsClient) func(interface{}) {
 			Message:     coolq.At(msg.UserId, "") + "喵帕斯~",
 			AutoEscape:  false,
 		}
-		ws.CallWithWs(coolq.SendMSG, api, "xxx")
+		c.CallWithWs(coolq.SendMSG, api, "xxx")
 	}
 }
